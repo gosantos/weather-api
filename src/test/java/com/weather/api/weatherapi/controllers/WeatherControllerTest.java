@@ -1,5 +1,6 @@
 package com.weather.api.weatherapi.controllers;
 
+import com.github.prominence.openweathermap.api.exception.DataNotFoundException;
 import com.github.prominence.openweathermap.api.exception.InvalidAuthTokenException;
 import com.weather.api.weatherapi.models.WeatherResponse;
 import com.weather.api.weatherapi.services.WeatherService;
@@ -26,7 +27,7 @@ public class WeatherControllerTest {
     }
 
     @Test
-    public void givenAnValidCityAndNumberOfDaysShouldReturnAnWeatherResponse() throws InvalidAuthTokenException{
+    public void givenAnValidCityAndNumberOfDaysShouldReturnAnWeatherResponse() throws InvalidAuthTokenException, DataNotFoundException {
         final String london = "London";
 
         when(weatherService.fetchAverageTemperaturesByCity(london)).thenReturn(WeatherResponse.builder().build());

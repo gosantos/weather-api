@@ -8,6 +8,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.Matchers.hasEntry;
+import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.core.Is.is;
 
 @RunWith(SpringRunner.class)
@@ -20,11 +22,24 @@ public class E2ETests {
     public void shouldReturn2xxWhenDataEndpointIsHit() {
         given()
                 .header("Content-Type", "application/json")
-                .when().log().all()
-                .queryParams("cityName", "London", "numberOfDays", "3")
-                .get(getUrl("data"))
-                .then().log().all()
-                .statusCode(is(200));
+                .when()
+                .get(getUrl("data/london"))
+                .then()
+                .statusCode(is(200))
+                .body("$", hasKey("nightAverageTemperature"))
+                .body("$", hasKey("nightAverageTemperature"))
+                .body("$", hasKey("averagePressure"))
+                .body("$", hasEntry("cityName", "london"));
+    }
+
+    @Test
+    public void shouldReturn5xxWhenDataEndpointIsHitWithAnInvalidCity() {
+        given()
+                .header("Content-Type", "application/json")
+                .when()
+                .get(getUrl("data/foobarbaz"))
+                .then()
+                .statusCode(is(500));
     }
 
     private String getUrl(String endpoint) {

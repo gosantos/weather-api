@@ -15,7 +15,7 @@ import java.util.List;
 @Builder
 public class WeatherResponse {
     private static final float DEFAULT_VALUE = 0F;
-    private static final float NUMBER_OF_DAYS = 40F;
+    private static final float NUMBER_OF_DAYS = 24F;
 
     @JsonIgnore
     private List<HourForecast> hourForecasts;
@@ -31,7 +31,7 @@ public class WeatherResponse {
                 .orElse(DEFAULT_VALUE) / NUMBER_OF_DAYS;
     }
 
-    @JsonProperty(value = "foo")
+    @JsonProperty(value = "nightAverageTemperature")
     public float calculateNightAverageTemperature() {
         return hourForecasts.stream()
                 .filter(HourForecast::isNight)
@@ -43,7 +43,6 @@ public class WeatherResponse {
     @JsonProperty(value = "averagePressure")
     public float calculateAveragePressure() {
         return hourForecasts.stream()
-                .filter(HourForecast::isNight)
                 .map(HourForecast::getPressure)
                 .reduce(Float::sum)
                 .orElse(0F) / NUMBER_OF_DAYS;
