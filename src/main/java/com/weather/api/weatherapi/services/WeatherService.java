@@ -9,9 +9,13 @@ import com.github.prominence.openweathermap.api.exception.DataNotFoundException;
 import com.github.prominence.openweathermap.api.exception.InvalidAuthTokenException;
 import com.github.prominence.openweathermap.api.model.response.HourlyForecast;
 import com.weather.api.weatherapi.converters.WeatherResponseConverter;
+import com.weather.api.weatherapi.exceptions.CityNotFoundException;
+import com.weather.api.weatherapi.models.HourForecast;
 import com.weather.api.weatherapi.models.WeatherResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class WeatherService {
@@ -23,18 +27,28 @@ public class WeatherService {
         this.weatherResponseConverter = weatherResponseConverter;
     }
 
-    public WeatherResponse fetchAverageTemperaturesByCity(String cityName, int numberOfDays)
-            throws InvalidAuthTokenException, DataNotFoundException {
-
+    public WeatherResponse fetchAverageTemperaturesByCity(String cityName) throws InvalidAuthTokenException {
         final OpenWeatherMapManager openWeatherManager = new OpenWeatherMapManager("7e0d05a35ca278396bfcb7ea3062e5bf");
         HourlyForecastRequester forecastRequester = openWeatherManager.getHourlyForecastRequester();
 
-        final HourlyForecast forecastResponse = forecastRequester
-                .setLanguage(Language.ENGLISH)
-                .setUnitSystem(Unit.METRIC_SYSTEM)
-                .setAccuracy(Accuracy.ACCURATE)
-                .getByCityName(cityName);
+        final HourlyForecast forecastResponse;
 
-        return weatherResponseConverter.convert(forecastResponse);
+        try {
+            forecastResponse = forecastRequester
+                    .setLanguage(Language.ENGLISH)
+                    .setUnitSystem(Unit.METRIC_SYSTEM)
+                    .setAccuracy(Accuracy.ACCURATE)
+                    .getByCityName(cityName);
+        } catch (DataNotFoundException e) {
+            throw new CityNotFoundException();
+        }
+
+        final List<HourForecast> hourForecasts = weatherResponseConverter.convert(forecastResponse);
+
+        return WeatherResponse.builder()
+                .cityName(cityName)
+                .hourForecasts(hourForecasts)
+                .build();
     }
+
 }
