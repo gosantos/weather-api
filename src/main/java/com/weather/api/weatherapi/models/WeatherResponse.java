@@ -23,7 +23,7 @@ public class WeatherResponse {
     private String cityName;
 
     @JsonProperty(value = "dayAverageTemperature")
-    public float calculateDayAverageTemperature() {
+    float calculateDayAverageTemperature() {
         return threeHourForecasts.stream()
                 .filter(ThreeHourForecast::isDay)
                 .map(ThreeHourForecast::getTemperature)
@@ -32,7 +32,7 @@ public class WeatherResponse {
     }
 
     @JsonProperty(value = "nightAverageTemperature")
-    public float calculateNightAverageTemperature() {
+    float calculateNightAverageTemperature() {
         return threeHourForecasts.stream()
                 .filter(ThreeHourForecast::isNight)
                 .map(ThreeHourForecast::getTemperature)
@@ -41,7 +41,7 @@ public class WeatherResponse {
     }
 
     @JsonProperty(value = "averagePressure")
-    public float calculateAveragePressure() {
+    float calculateAveragePressure() {
         return getThreeHourForecastsTheForFirstThreeDays().stream()
                 .map(ThreeHourForecast::getPressure)
                 .reduce(Float::sum)
