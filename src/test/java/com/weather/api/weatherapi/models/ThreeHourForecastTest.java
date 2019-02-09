@@ -9,42 +9,42 @@ import java.util.Date;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
-public class HourForecastTest {
+public class ThreeHourForecastTest {
     @Test
     public void isDayShouldReturnTrueForADailyTime() throws ParseException {
         Date date = createDateFromString("2019-02-14T12:00:00.000+0000");
 
-        final HourForecast hourForecast = HourForecast.builder().date(date).build();
+        final ThreeHourForecast threeHourForecast = ThreeHourForecast.builder().date(date).build();
 
-        assertThat(hourForecast.isDay(), is(true));
+        assertThat(threeHourForecast.isDay(), is(true));
     }
 
     @Test
     public void isDayShouldReturnFalseForANonDailyTime() throws ParseException {
         Date date = createDateFromString("2019-02-14T21:00:00.000+0000");
 
-        final HourForecast hourForecast = HourForecast.builder().date(date).build();
+        final ThreeHourForecast threeHourForecast = ThreeHourForecast.builder().date(date).build();
 
-        assertThat(hourForecast.isDay(), is(false));
+        assertThat(threeHourForecast.isDay(), is(false));
     }
 
     @Test
     public void isNightShouldReturnTrueForANightlyTime() throws ParseException {
         Date date = createDateFromString("2019-02-14T12:00:00.000+0000");
 
-        final HourForecast hourForecast = HourForecast.builder().date(date).build();
+        final ThreeHourForecast threeHourForecast = ThreeHourForecast.builder().date(date).build();
 
 
-        assertThat(hourForecast.isNight(), is(false));
+        assertThat(threeHourForecast.isNight(), is(false));
     }
 
     @Test
     public void isNightShouldReturnFalseForANonNightlyTime() throws ParseException {
         Date date = createDateFromString("2019-02-14T21:00:00.000+0000");
 
-        final HourForecast hourForecast = HourForecast.builder().date(date).build();
+        final ThreeHourForecast threeHourForecast = ThreeHourForecast.builder().date(date).build();
 
-        assertThat(hourForecast.isNight(), is(true));
+        assertThat(threeHourForecast.isNight(), is(true));
     }
 
     private Date createDateFromString(String date) throws ParseException {

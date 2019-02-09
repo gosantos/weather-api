@@ -5,40 +5,47 @@ import org.junit.Test;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 public class WeatherResponseTest {
     @Test
-    public void shouldReturnTheAverageTemperatureForTheNext3Days() throws ParseException {
+    public void shouldReturnDayAverageTemperatureForTheNext3Days() throws ParseException {
         final WeatherResponse weatherResponse = generateForecastMocksForDailyTests();
 
-//        assertThat(weatherResponse.calculateDailyAverageTemperature(), is(10F));
+        assertThat(weatherResponse.calculateDayAverageTemperature(), is(10F));
+    }
+
+    @Test
+    public void shouldReturnAveragePressureForTheNext3Days() throws ParseException {
+        final WeatherResponse weatherResponse = generateForecastMocksForDailyTests();
+
+        assertThat(weatherResponse.calculateAveragePressure(), is(7F));
+    }
+
+    @Test
+    public void shouldReturnNightAverageTemperatureForTheNext3Days() throws ParseException {
+        final WeatherResponse weatherResponse = generateForecastMocksForDailyTests();
+
+        assertThat(weatherResponse.calculateNightAverageTemperature(), is(0F));
     }
 
     private WeatherResponse generateForecastMocksForDailyTests() throws ParseException {
-        List<HourForecast> hourForecasts = new ArrayList<>();
+        List<ThreeHourForecast> threeHourForecasts = new ArrayList<>();
 
         for (int i = 0; i < 24; i++) {
-            HourForecast hourForecast = HourForecast.builder()
-                    .date(createDateFromString("2019-02-14T12:00:00.000+0000"))
-                    .pressure(10F)
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
+            ThreeHourForecast threeHourForecast = ThreeHourForecast.builder()
+                    .date(format.parse("2019-02-14T12:00:00.000+0000"))
+                    .pressure(7F)
                     .temperature(10F)
                     .build();
-            hourForecasts.add(hourForecast);
+            threeHourForecasts.add(threeHourForecast);
         }
 
-        return WeatherResponse.builder().hourForecasts(hourForecasts).build();
-    }
-
-    private Date createDateFromString(String date) throws ParseException {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-
-        return format.parse(date);
+        return WeatherResponse.builder().threeHourForecasts(threeHourForecasts).build();
     }
 }

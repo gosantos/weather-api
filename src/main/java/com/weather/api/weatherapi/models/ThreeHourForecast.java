@@ -7,7 +7,7 @@ import java.util.Date;
 
 @Builder
 @Value
-public class HourForecast {
+public class ThreeHourForecast {
     private static final int MAX_DAILY_HOUR = 18;
     private static final int MIN_DAILY_HOUR = 6;
 

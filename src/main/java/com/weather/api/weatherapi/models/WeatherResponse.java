@@ -15,36 +15,40 @@ import java.util.List;
 @Builder
 public class WeatherResponse {
     private static final float DEFAULT_VALUE = 0F;
-    private static final float NUMBER_OF_DAYS = 24F;
+    private static final float THREE_DAYS_TIME_FRAME = 24F;
 
     @JsonIgnore
-    private List<HourForecast> hourForecasts;
+    private List<ThreeHourForecast> threeHourForecasts;
 
     private String cityName;
 
     @JsonProperty(value = "dayAverageTemperature")
     public float calculateDayAverageTemperature() {
-        return hourForecasts.stream()
-                .filter(HourForecast::isDay)
-                .map(HourForecast::getTemperature)
+        return threeHourForecasts.stream()
+                .filter(ThreeHourForecast::isDay)
+                .map(ThreeHourForecast::getTemperature)
                 .reduce(Float::sum)
-                .orElse(DEFAULT_VALUE) / NUMBER_OF_DAYS;
+                .orElse(DEFAULT_VALUE) / THREE_DAYS_TIME_FRAME;
     }
 
     @JsonProperty(value = "nightAverageTemperature")
     public float calculateNightAverageTemperature() {
-        return hourForecasts.stream()
-                .filter(HourForecast::isNight)
-                .map(HourForecast::getTemperature)
+        return threeHourForecasts.stream()
+                .filter(ThreeHourForecast::isNight)
+                .map(ThreeHourForecast::getTemperature)
                 .reduce(Float::sum)
-                .orElse(DEFAULT_VALUE) / NUMBER_OF_DAYS;
+                .orElse(DEFAULT_VALUE) / THREE_DAYS_TIME_FRAME;
     }
 
     @JsonProperty(value = "averagePressure")
     public float calculateAveragePressure() {
-        return hourForecasts.stream()
-                .map(HourForecast::getPressure)
+        return getThreeHourForecastsTheForFirstThreeDays().stream()
+                .map(ThreeHourForecast::getPressure)
                 .reduce(Float::sum)
-                .orElse(0F) / NUMBER_OF_DAYS;
+                .orElse(DEFAULT_VALUE) / THREE_DAYS_TIME_FRAME;
+    }
+
+    private List<ThreeHourForecast> getThreeHourForecastsTheForFirstThreeDays() {
+        return threeHourForecasts.subList(0, (int) THREE_DAYS_TIME_FRAME);
     }
 }
